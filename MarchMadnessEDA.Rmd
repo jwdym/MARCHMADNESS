@@ -52,5 +52,21 @@ tournament_2017$WTeamID <- as.factor(tournament_2017$WTeamID)
 dim(tournament_2017) # Verify there are 67 games
 ggplot(tournament_2017) + geom_bar(aes(WTeamID), fill = "blue") + theme_bw() # Verify the number of wins (6-7 for first place)
 
-# 
+# Look at teams proportion of wins in the regular season and if they make it to the tournament
+RegularSeasonSub <- list()
+for(i in 1985:2017){
+  RegularSeasonSub[[i - 1984]] <- subset(RegularSeasonCompactResults, Season == i)
+}
+# Look at 2017 season
+teams2017 <- unique(c(RegularSeasonSub[[33]]$WTeamID, RegularSeasonSub[[33]]$LTeamID))
+length(teams2017) # Number of teams in 2017
+NumWins2017 <- NumLoss2017 <- InTourney <- c()
+for(i in 1:length(teams2017)){
+  NumWins2017[i] <- sum(RegularSeasonSub[[33]]$WTeamID == teams2017[i])
+  NumLoss2017[i] <- sum(RegularSeasonSub[[33]]$LTeamID == teams2017[i])
+  InTourney[i] <- teams2017[i] %in% tournament_2017$WTeamID | teams2017[i] %in% tournament_2017$LTeamID
+}
+WinProp2017 <- data.frame(Team = teams2017, Wins = NumWins2017 / (NumWins2017 + NumLoss2017), InTournament = InTourney)
+# Plot win proportions
+ggplot(WinProp2017) + geom_bar(aes(Team, Wins, fill = InTournament), stat = "identity")
 ```
