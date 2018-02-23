@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Load Data files
 ```{r}
+# Note this wd setup work only if the current working directory is the MARCHMADNESS folder
 work <- getwd()
 n <- nchar(work)
 work <- substr(work, 1, n - 13)
