@@ -45,4 +45,12 @@ library(dplyr)
 # Add descriptions to ConferencesTourneyGames
 Conferences <- left_join(ConferenceTourneyGames, Conferences, "ConfAbbrev")
 rm(ConferenceTourneyGames)
+
+# Look at 2017 NCAA tournament
+tournament_2017 <- NCAATourneyCompactReults[NCAATourneyCompactReults$Season == 2017, ]
+tournament_2017$WTeamID <- as.factor(tournament_2017$WTeamID)
+dim(tournament_2017) # Verify there are 67 games
+ggplot(tournament_2017) + geom_bar(aes(WTeamID), fill = "blue") + theme_bw() # Verify the number of wins (6-7 for first place)
+
+# 
 ```
