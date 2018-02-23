@@ -1,0 +1,47 @@
+---
+title: "March Madness 2018 EDA"
+author: "Jacob Dym, Paul Harmon"
+date: "February 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Data files
+```{r}
+work <- getwd()
+n <- nchar(work)
+work <- substr(work, 1, n - 13)
+setwd(paste0(work, "/DataFiles"))
+
+# Load DataFiles
+Cities <- read.csv("Cities.csv")
+Conferences <- read.csv("Conferences.csv")
+ConferenceTourneyGames <- read.csv("ConferenceTourneyGames.csv")
+GameCities <- read.csv("GameCities.csv")
+NCAATourneyCompactReults <- read.csv("NCAATourneyCompactResults.csv")
+NCAATourneyDetailedResults <- read.csv("NCAATourneyDetailedResults.csv")
+NCAATourneySeedRoundSlots <- read.csv("NCAATourneySeedRoundSlots.csv")
+NCAATourneySeeds <- read.csv("NCAATourneySeeds.csv")
+NCAATourneySlots <- read.csv("NCAATourneySlots.csv")
+RegularSeasonCompactResults <- read.csv("RegularSeasonCompactResults.csv")
+RegularSeasonDetailedResults <- read.csv("RegularSeasonDetailedResults.csv")
+Seasons <- read.csv("Seasons.csv")
+SecondaryTourneyCompactResults <- read.csv("SecondaryTourneyCompactResults.csv")
+SecondaryTourneyTeams <- read.csv("SecondaryTourneyTeams.csv")
+TeamCoaches <- read.csv("TeamCoaches.csv")
+TeamConferences <- read.csv("TeamConferences.csv")
+Teams <- read.csv("Teams.csv")
+TeamSpellings <- read.csv("TeamSpellings.csv")
+```
+
+# EDA
+```{r}
+library(ggplot2)
+library(dplyr)
+# Add descriptions to ConferencesTourneyGames
+Conferences <- left_join(ConferenceTourneyGames, Conferences, "ConfAbbrev")
+rm(ConferenceTourneyGames)
+```
