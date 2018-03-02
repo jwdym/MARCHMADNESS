@@ -73,7 +73,7 @@ WinProp2017 <- data.frame(Team = teams2017, Wins = NumWins2017 / (NumWins2017 + 
 # Plot win proportions
 ggplot(WinProp2017) + geom_bar(aes(Team, Wins, fill = InTournament), stat = "identity") + theme_bw()
 ```
-It looks like teams with the highest win rate aren't always in the tournament.
+It looks like teams with the highest win rate aren't always in the tournament. This is expected because the teams that get into the tournament are either from at-large bids or they win their conference tournament. (Teams with lower win counts probably got in by winning a conference tournament. )
 
 # Set up for ELO
 ```{r}
@@ -142,4 +142,18 @@ for(i in 2:101){
   Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i) 
 }
 ```
+
+
+
+#PLOT SOME ELOS BOIIII 
+```{r}
+
+```
+
+
+
+
+
+
+
 
