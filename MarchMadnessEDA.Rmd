@@ -128,6 +128,8 @@ Get_ELO <- function(k, df, teamid, iter){
   opid <- tdat$OpponentID
   odat <- df[[which(Teams$TeamID == opid)]]
   pos <- which((odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season))
+  odat <- odat[pos, ]
+  
   Opponent_ELO <- ifelse(pos ==1, 1000, odat[pos - 1, ]$ELO) #finds the right row, then uses the previous row's elo score
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
