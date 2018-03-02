@@ -120,6 +120,7 @@ for(i in 1:dim(Teams)[1]){
                               OvertimeRounds = ot, Coach = dat$CoachName, OpponentID = opponent, 
                               Opponent = opteam, Day = dat$DayNum, ELO = elo) 
 }
+names(Team_ELO) <- Teams$TeamName
 
 # Function to calculate a teams new ELO rating based on a game
 Get_ELO <- function(k, df, teamid, iter){
@@ -141,9 +142,8 @@ Get_ELO <- function(k, df, teamid, iter){
 
 # Build ELO scores
 ```{r}
-n <- dim()
 for(i in 2:101){
-  Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i) 
+  Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i)
 }
 ```
 
