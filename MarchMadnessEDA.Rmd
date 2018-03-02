@@ -144,12 +144,38 @@ Get_ELO <- function(k, df, teamid, iter){
 for(i in 2:101){
   Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i) 
 }
+
+
+#builds a function to work through the list and calculate team elo
+
+for (i in 1985:2007){
+  szn_filter <- function(df, year){dplyr::filter(df, Season == i)}
+  TEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
+  
+  n_game <- nrow(34)
+  n_teams <- length(TEMP_LIST)
+  for (j in 1:n_game){
+    #code here 
+    for (k in 1:n_teams){
+      
+    }
+    
+  }
+  #define previous elo as the last one
+  
+}
 ```
 
 
 
-#PLOT SOME ELOS BOIIII 
+
+#PLOT SOME ELOS BOII 
 ```{r}
+#tests some stuff
+sznfilter <- 
+lapply(Team_ELO, sznfilter
+
+
 
 ```
 
