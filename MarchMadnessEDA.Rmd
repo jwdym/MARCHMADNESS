@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Load Data files
 ```{r}
 # Note this wd setup work only if the current working directory is the MARCHMADNESS folder
+#Paul: If on P$'s computer, don't run the next line of code
 work <- getwd()
 n <- nchar(work)
 work <- substr(work, 1, n - 13)
@@ -50,7 +51,7 @@ rm(ConferenceTourneyGames)
 tournament_2017 <- NCAATourneyCompactReults[NCAATourneyCompactReults$Season == 2017, ]
 tournament_2017$WTeamID <- as.factor(tournament_2017$WTeamID)
 dim(tournament_2017) # Verify there are 67 games
-ggplot(tournament_2017) + geom_bar(aes(WTeamID), fill = "blue") + theme_bw() # Verify the number of wins (6-7 for first place)
+ggplot(tournament_2017) + geom_bar(aes(WTeamID), fill = "orange") + theme_bw() # Verify the number of wins (6-7 for first place)
 
 # Look at teams proportion of wins in the regular season and if they make it to the tournament
 RegularSeasonSub <- list()
