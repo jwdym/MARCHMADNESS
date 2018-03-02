@@ -87,12 +87,13 @@ for(i in 1:dim(Teams)[1]){
   coach <- coach[coach$FirstDayNum == 0, ]
   dat <- left_join(dat, coach, by = "Season")
   dat <- dat[dat$Season != 2018, ]
+  day <- dat$DayNum
   home <- dat$WLoc
   ot <- dat$NumOT
   score_difference <- as.numeric(win) * (dat$WScore - dat$LScore) + as.numeric(!win) * (dat$LScore - dat$WScore)
   Team_ELO[[i]] <- data.frame(TeamName = Teams$TeamName[i], TeamID = Teams$TeamID[i], 
                               Season = season, Win = win, PointSpread = score_difference, Location = home,
-                              OvertimeRounds = ot, Coach = dat$CoachName) 
+                              OvertimeRounds = ot, Day = day, Coach = dat$CoachName) 
 }
 ```
 
