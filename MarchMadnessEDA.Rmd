@@ -158,7 +158,8 @@ for (i in 1985:2007){
   for (j in 1:n_game){
     #code here 
     for (k in 1:n_teams){
-      
+      # calculate elo for each team 
+      Get_ELO(k = _, team = _, df = _, iter = _) 
     }
     
   }
