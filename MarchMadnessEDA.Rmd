@@ -121,8 +121,8 @@ for(i in 1:dim(Teams)[1]){
 }
 
 # Function to calculate a teams new ELO rating based on a game
-Get_ELO <- function(K, df, teamid, iter){
-  tdat <- df[[which(Teams$TeamID == teamid)]][iter, ]
+Get_ELO <- function(k, df, teamid, iter){
+  tdat <- df[[which(Teams$TeamID == teamid)]][iter - 1, ]
   Current_ELO <- tdat$ELO
   opid <- df[[which(Teams$TeamID == teamid)]]$OpponentID
   odat <- df[[which(Teams$TeamID == opid)]]
@@ -130,8 +130,15 @@ Get_ELO <- function(K, df, teamid, iter){
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
   we <- 1 / (10 ^(-dr / 400) + 1)
-  
-  
+  elo <- Current_ELO + k * abs(tdat$PointSpread) * (w - we)
+  return(elo)
+}
+```
+
+# Build ELO scores
+```{r}
+for(i in 2:101){
+  Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i) 
 }
 ```
 
