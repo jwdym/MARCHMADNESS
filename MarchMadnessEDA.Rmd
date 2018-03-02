@@ -127,8 +127,8 @@ Get_ELO <- function(k, df, teamid, iter){
   Current_ELO <- tdat$ELO
   opid <- tdat$OpponentID
   odat <- df[[which(Teams$TeamID == opid)]]
-  odat <- odat[(odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season), ]
-  Opponent_ELO <- odat$ELO
+  pos <- which((odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season))
+  Opponent_ELO <- odat[pos - 1, ]$ELO
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
   we <- 1 / (10 ^(-dr / 400) + 1)
