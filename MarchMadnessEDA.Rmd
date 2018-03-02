@@ -70,5 +70,8 @@ for(i in 1:length(teams2017)){
 WinProp2017 <- data.frame(Team = teams2017, Wins = NumWins2017 / (NumWins2017 + NumLoss2017), InTournament = InTourney)
 
 # Plot win proportions
-ggplot(WinProp2017) + geom_bar(aes(Team, Wins, fill = InTournament), stat = "identity")
+ggplot(WinProp2017) + geom_bar(aes(Team, Wins, fill = InTournament), stat = "identity") + theme_bw()
 ```
+It looks like teams with the highest win rate aren't always in the tournament.
+
+
