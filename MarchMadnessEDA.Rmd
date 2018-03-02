@@ -124,8 +124,9 @@ for(i in 1:dim(Teams)[1]){
 Get_ELO <- function(k, df, teamid, iter){
   tdat <- df[[which(Teams$TeamID == teamid)]][iter - 1, ]
   Current_ELO <- tdat$ELO
-  opid <- df[[which(Teams$TeamID == teamid)]]$OpponentID
+  opid <- tdat$OpponentID
   odat <- df[[which(Teams$TeamID == opid)]]
+  odat <- odat[(odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season), ]
   Opponent_ELO <- odat$ELO
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
