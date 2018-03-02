@@ -139,6 +139,7 @@ Get_ELO <- function(k, df, teamid, iter){
 
 # Build ELO scores
 ```{r}
+n <- dim()
 for(i in 2:101){
   Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i) 
 }
