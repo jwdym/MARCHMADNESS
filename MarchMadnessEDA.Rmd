@@ -85,12 +85,29 @@ for(i in 1:dim(Teams)[1]){
   season <- dat$Season
   coach <- TeamCoaches[TeamCoaches$TeamID == Teams$TeamID[i], ]
   coach <- coach[coach$FirstDayNum == 0, ]
-  dat <- left_join(dat, coach, by = "Season")
+  dat <- full_join(dat, coach, by = "Season")
   dat <- dat[dat$Season != 2018, ]
-  day <- dat$DayNum
   home <- dat$WLoc
+  for(j in 1:length(home)){
+    if(win[j]){
+      home[j] <- home[j]
+      next
+    }
+    if(!win[j]){
+      if(home[j] == "N"){
+        home[j] <- home[j]
+        next
+      }
+      else home[j] <- "A"
+    }
+  }
   ot <- dat$NumOT
-  opponent <- cbind(dat$WTeamID, dat$LTeamID)[cbind(dat$WTeamID, dat$LTeamID) != Teams$TeamID[i]]
+  game <- data.frame(wt = dat$WTeamID, lt = dat$LTeamID)
+  gselect <- game != Teams$TeamID[i]
+  opponent <- c()
+  for(j in 1:dim(game)[1]){
+    opponent[j] <- game[j, gselect[j, ]] 
+  }
   opteam <- c()
   for(j in 1:length(opponent)){
     opteam[j] <- as.character(Teams$TeamName[Teams$TeamID == opponent[j]])
@@ -98,8 +115,16 @@ for(i in 1:dim(Teams)[1]){
   score_difference <- as.numeric(win) * (dat$WScore - dat$LScore) + as.numeric(!win) * (dat$LScore - dat$WScore)
   Team_ELO[[i]] <- data.frame(TeamName = Teams$TeamName[i], TeamID = Teams$TeamID[i], 
                               Season = season, Win = win, PointSpread = score_difference, Location = home,
-                              OvertimeRounds = ot, Day = day, Coach = dat$CoachName, OpponentID = opponent, 
+                              OvertimeRounds = ot, Coach = dat$CoachName, OpponentID = opponent, 
                               Opponent = opteam) 
+}
+
+# Function to calculate a teams new ELO rating based on a game
+Get_ELO <- function(K, df){
+  w <- as.numeric(df$Win)
+  sdiff <- df$CurrentELO
+  
+  
 }
 ```
 
