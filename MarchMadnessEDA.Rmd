@@ -90,10 +90,16 @@ for(i in 1:dim(Teams)[1]){
   day <- dat$DayNum
   home <- dat$WLoc
   ot <- dat$NumOT
+  opponent <- cbind(dat$WTeamID, dat$LTeamID)[cbind(dat$WTeamID, dat$LTeamID) != Teams$TeamID[i]]
+  opteam <- c()
+  for(j in 1:length(opponent)){
+    opteam[j] <- as.character(Teams$TeamName[Teams$TeamID == opponent[j]])
+  }
   score_difference <- as.numeric(win) * (dat$WScore - dat$LScore) + as.numeric(!win) * (dat$LScore - dat$WScore)
   Team_ELO[[i]] <- data.frame(TeamName = Teams$TeamName[i], TeamID = Teams$TeamID[i], 
                               Season = season, Win = win, PointSpread = score_difference, Location = home,
-                              OvertimeRounds = ot, Day = day, Coach = dat$CoachName) 
+                              OvertimeRounds = ot, Day = day, Coach = dat$CoachName, OpponentID = opponent, 
+                              Opponent = opteam) 
 }
 ```
 
