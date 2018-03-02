@@ -123,12 +123,12 @@ for(i in 1:dim(Teams)[1]){
 
 # Function to calculate a teams new ELO rating based on a game
 Get_ELO <- function(k, df, teamid, iter){
-  tdat <- df[[which(Teams$TeamID == teamid)]][iter - 1, ]
+  tdat <- df[[which(Teams$TeamID == teamid)]][iter - 1, ] #grabs teams previous elo
   Current_ELO <- tdat$ELO
   opid <- tdat$OpponentID
   odat <- df[[which(Teams$TeamID == opid)]]
   pos <- which((odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season))
-  Opponent_ELO <- odat[pos - 1, ]$ELO
+  Opponent_ELO <- ifelse(pos ==1, 1000, odat[pos - 1, ]$ELO) #finds the right row, then uses the previous row's elo score
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
   we <- 1 / (10 ^(-dr / 400) + 1)
