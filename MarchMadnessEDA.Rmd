@@ -159,7 +159,8 @@ for (i in 1985:2007){
     #code here 
     for (k in 1:n_teams){
       # calculate elo for each team 
-      Get_ELO(k = _, team = _, df = _, iter = _) 
+      team <- team_name[k]
+      ELO_LIST [[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j) 
     }
     
   }
