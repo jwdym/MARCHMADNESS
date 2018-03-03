@@ -161,7 +161,21 @@ ELO_LIST <- list()
 for (i in 1985:2007){
   ELO_LIST[[i-1984]] <- list() #defines the kth part to be a list, according to Dr. Dym
   szn_filter <- function(df, year){dplyr::filter(df, Season == i)}
-  TEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
+  TTEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
+  TEMP_LIST <- list()
+  
+  #check if team actually played in that szn
+  team_check <- function(TLIST){
+    tf <- c()
+    for (q in 1:length(TLIST)){
+    tf[q] <- TLIST[[q]][1,3] %in% i
+      }
+  return(tf)}
+  tsizzle <- team_check(TTEMP_LIST)
+ 
+  TEMP_LIST <- TTEMP_LIST[tsizzle]
+  
+ 
   
   n_game <- max(unlist(lapply(TEMP_LIST, nrow)))
   n_teams <- length(TEMP_LIST)
