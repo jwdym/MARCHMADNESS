@@ -187,12 +187,7 @@ for (i in 1985:2007){
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-<<<<<<< HEAD
       ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 1000)
-=======
-      con <- Get_ELO(k = 20, teamid = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j, baseline = 1000)
-      ELO_LIST[[i-1984]][[k]][j] <- con 
->>>>>>> fa7fcad4baeecc0250fcf023dcf6107d8c041a80
     }
     
   }
