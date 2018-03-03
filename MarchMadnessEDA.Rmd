@@ -218,7 +218,27 @@ IT'S WORKING
 
 #CAN WE PREDICT BASED ON LAST ELO
 ```{r}
-names()
+# Put ELO scores back into Team data
+
+
+for(i in 1:length(Team_ELO)){
+  seasons_played <- unique(Team_ELO[[i]]$Season)
+  first_season <- min(seasons_played)
+  for(j in seasons_played){
+    K <- which(names(ELO_LIST[[j - 1984]]) == Team_ELO[[i]]$TeamName[1])
+    Team_ELO[[i]][Team_ELO[[i]]$Season == j, ]$ELO <- ELO_LIST[[j - 1984]][[K]]
+  }
+}
+  
+
+names(ELO_LIST[[2014 - 1984]])
+
+# Basic probability prediction function
+# For seasons 2014 - 2017
+Prob_Predict <- function(elo1, elo2){
+  dr <- elo1 + 200 * (tdat$Location == "H") - (elo2 + 200 * (odat$Location == "H"))
+  return(1 / (10 ^(-dr / 350) + 1))
+}
 
 
 
