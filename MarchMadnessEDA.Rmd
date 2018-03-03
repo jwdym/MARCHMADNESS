@@ -156,20 +156,23 @@ for(i in 2:101){
 
 
 #builds a function to work through the list and calculate team elo
-
+#DEFINE ELO LIST
+ELO_LIST <- list()
 for (i in 1985:2007){
+  ELO_LIST[[i-1984]] <- list() #defines the kth part to be a list, according to Dr. Dym
   szn_filter <- function(df, year){dplyr::filter(df, Season == i)}
   TEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
   
-  n_game <- nrow(34)
+  n_game <- max(unlist(lapply(TEMP_LIST, nrow)))
   n_teams <- length(TEMP_LIST)
   for (j in 1:n_game){
     #code here 
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-      team <- team_name[k]
-      ELO_LIST [[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j) 
+      ELO_LIST [[i - 1984]][[k]] <- c()
+      #
+      ELO_LIST [[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j, baseline = 1000) 
     }
     
   }
