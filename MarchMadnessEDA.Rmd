@@ -208,7 +208,9 @@ for (i in 1985:1988){
 }
 ```
 
-OK, so we have some Elos... but we're going to have to tune the Elo. Some issues that are coming up is that in the any of the years after the first year, the ELO ratings are starting at 0 rather than at the mean of the previous year. Not sure what's causing that.   
+OK, so we have some Elos... but we're going to have to tune the Elo. Some issues that are coming up is that in the any of the years after the first year, the ELO ratings are starting at 0 rather than at the mean of the previous year. Not sure what's causing that.
+
+Got the ELO scores to not be 0 at the start, function has a hard time recognizing teams that have been in D1 already and just randomly assigns baseline ELO scores to teams. 
 
 
 #CAN WE PREDICT BASED ON LAST ELO
