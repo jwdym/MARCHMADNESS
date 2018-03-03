@@ -176,17 +176,17 @@ for (i in 1985:2007){
   TEMP_LIST <- TTEMP_LIST[tsizzle]
   
  
-  
+  for(j in 1:n_teams){ELO_LIST[[i - 1984]][[j]] <- c()}
   n_game <- max(unlist(lapply(TEMP_LIST, nrow)))
   n_teams <- length(TEMP_LIST)
+  for(j in 1:n_teams){ELO_LIST[[i - 1984]][[j]] <- nrow(TEMP_LIST[[j]])}
   for (j in 1:n_game){
     #code here 
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-      ELO_LIST [[i - 1984]][[k]] <- c()
-      #
-      ELO_LIST [[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j, baseline = 1000) 
+      con <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j, baseline = 1000)
+      ELO_LIST[[i-1984]][[k]][j] <- con 
     }
     
   }
