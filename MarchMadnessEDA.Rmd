@@ -197,14 +197,12 @@ for (i in 1985:2007){
 }
 ```
 
-OK, so we have some Elos... but we're going to have to tune the Elo  
+OK, so we have some Elos... but we're going to have to tune the Elo. Some issues that are coming up is that in the any of the years after the first year, the ELO ratings are starting at 0 rather than at the mean of the previous year. Not sure what's causing that.   
 
 
-#PLOT SOME ELOS BOII 
+#CAN WE PREDICT BASED ON LAST ELO
 ```{r}
-#tests some stuff
-sznfilter <- 
-lapply(Team_ELO, sznfilter
+names()
 
 
 
