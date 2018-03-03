@@ -148,8 +148,8 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
   
   Opponent_ELO <- ifelse(pos ==1, baseline, ELO_LIST[[I - 1984]][[which(TEMP_TEAMS == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
   w <- as.numeric(tdat$Win)
-  dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
-  we <- 1 / (10 ^(-dr / 25) + 1) # edited Probability estimation so estimated probabilities had a better range
+  dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 200 * (odat$Location == "H"))
+  we <- 1 / (10 ^(-dr / 350) + 1) # edited Probability estimation so estimated probabilities had a better range
   elo <- Current_ELO + scalar * abs(tdat$PointSpread) * (w - we)
   if(elo < 1){
     elo <- 1 
@@ -200,7 +200,7 @@ for (i in 1985:2017){
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-      ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(scalar = 5, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 1000, I = i, K = k)
+      ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(scalar = 5, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 5000, I = i, K = k)
     }
     
   }
