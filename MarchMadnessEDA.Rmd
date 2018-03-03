@@ -131,14 +131,14 @@ Get_ELO <- function(k, df, teamid, iter, baseline){
     return(mean(ELO_LIST[[i-1]][[k]])) 
   }
   else{
-    tdat <- df[[which(Teams$TeamID == teamid)]][iter, ] #grabs teams previous elo
-    Current_ELO <- ELO_LIST[[i]][[k]][iter - 1]
+    tdat <- df[[which(TEMP_TEAMS == teamid)]][iter, ] #grabs teams previous elo
+    Current_ELO <- ELO_LIST[[i - 1984]][[k]][iter - 1]
     opid <- tdat$OpponentID
-    odat <- df[[which(Teams$TeamID == opid)]]
+    odat <- df[[which(TEMP_TEAMS == opid)]]
     pos <- which((odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season))
     odat <- odat[pos, ]
     
-    Opponent_ELO <- ifelse(pos ==1, baseline, ELO_LIST[[i]][[which(Teams$TeamID == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
+    Opponent_ELO <- ifelse(pos ==1, baseline, ELO_LIST[[i - 1984]][[which(TEMP_TEAMS == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
     w <- as.numeric(tdat$Win)
     dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 100 * (odat$Location == "H"))
     we <- 1 / (10 ^(-dr / 400) + 1)
@@ -174,19 +174,20 @@ for (i in 1985:2007){
   tsizzle <- team_check(TTEMP_LIST)
  
   TEMP_LIST <- TTEMP_LIST[tsizzle]
+  TEMP_TEAMS <- c()
+  for(j in 1:length(TEMP_LIST)){
+    TEMP_TEAMS[j] <- TEMP_LIST[[j]]$TeamID[1] 
+  }
   
- 
-  for(j in 1:n_teams){ELO_LIST[[i - 1984]][[j]] <- c()}
   n_game <- max(unlist(lapply(TEMP_LIST, nrow)))
   n_teams <- length(TEMP_LIST)
-  for(j in 1:n_teams){ELO_LIST[[i - 1984]][[j]] <- nrow(TEMP_LIST[[j]])}
+  for(j in 1:n_teams){ELO_LIST[[i - 1984]][[j]] <- rep(0, nrow(TEMP_LIST[[j]]))}
   for (j in 1:n_game){
     #code here 
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-      con <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID, df = TEMP_LIST, iter = j, baseline = 1000)
-      ELO_LIST[[i-1984]][[k]][j] <- con 
+      ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 1000)
     }
     
   }
