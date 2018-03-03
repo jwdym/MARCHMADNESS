@@ -129,12 +129,13 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
     return(baseline)
   }
   if((I > 1985) & (iter == 1)){
-    newcheck <- c(names(ELO_LIST[[I - 1984]][K]) %in% names(ELO_LIST[[I-1985]][K]))
+    newcheck <- names(ELO_LIST[[I - 1984]][K]) %in% names(ELO_LIST[[I-1985]])
     if(!newcheck){
       return(baseline) 
     }
     else {
-      elo <- mean(ELO_LIST[[I-1985]][[K]])
+      ind <- which(names(ELO_LIST[[I - 1984]][K]) == names(ELO_LIST[[I-1985]]))
+      elo <- mean(ELO_LIST[[I-1985]][[ind]])
       return(elo) #I got it to give new D1 teams basline ELOs, however it has a hard time recognizing old vs new D1 teams
     }
   }
@@ -211,6 +212,8 @@ for (i in 1985:1988){
 OK, so we have some Elos... but we're going to have to tune the Elo. Some issues that are coming up is that in the any of the years after the first year, the ELO ratings are starting at 0 rather than at the mean of the previous year. Not sure what's causing that.
 
 Got the ELO scores to not be 0 at the start, function has a hard time recognizing teams that have been in D1 already and just randomly assigns baseline ELO scores to teams. 
+
+IT'S WORKING
 
 
 #CAN WE PREDICT BASED ON LAST ELO
