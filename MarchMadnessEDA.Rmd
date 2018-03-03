@@ -123,12 +123,13 @@ for(i in 1:dim(Teams)[1]){
 names(Team_ELO) <- Teams$TeamName
 
 # Function to calculate a teams new ELO rating based on a game
+
 Get_ELO <- function(k, df, teamid, iter, baseline){
   if((i == 1985) & (iter == 1)){
     return(baseline)
   }
   else if((i > 1985) & (iter == 1)){
-    return(mean(ELO_LIST[[i-1]][[k]])) 
+    return(mean(ELO_LIST[[i-1984]][[k]])) ###THIS LINE IS A PROBLEM!!!!
   }
   else{
     tdat <- df[[which(TEMP_TEAMS == teamid)]][iter, ] #grabs teams previous elo
@@ -187,7 +188,7 @@ for (i in 1985:2007){
     for (k in 1:n_teams){
       if(dim(TEMP_LIST[[k]])[1] < j) next
       # calculate elo for each team 
-      ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(k = 20, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 1000)
+      ELO_LIST[[i-1984]][[k]][j] <- Get_ELO(k = 5, team = TEMP_LIST[[k]]$TeamID[1], df = TEMP_LIST, iter = j, baseline = 1000)
     }
     
   }
@@ -196,7 +197,7 @@ for (i in 1985:2007){
 }
 ```
 
-
+OK, so we have some Elos... but we're going to have to tune the Elo  
 
 
 #PLOT SOME ELOS BOII 
