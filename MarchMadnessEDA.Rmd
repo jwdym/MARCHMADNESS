@@ -168,7 +168,7 @@ for(i in 2:101){
 #builds a function to work through the list and calculate team elo
 #DEFINE ELO LIST
 ELO_LIST <- list()
-for (i in 1985:1988){
+for (i in 1985:2017){
   ELO_LIST[[i-1984]] <- list() #defines the kth part to be a list, according to Dr. Dym
   szn_filter <- function(df, year){dplyr::filter(df, Season == i)}
   TTEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
