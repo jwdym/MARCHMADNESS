@@ -160,11 +160,6 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
 
 # Build ELO scores
 ```{r}
-for(i in 2:101){
-  Team_ELO[[1]]$ELO[i] <- Get_ELO(20, Team_ELO, 1101, i)
-}
-
-
 #builds a function to work through the list and calculate team elo
 #DEFINE ELO LIST
 ELO_LIST <- list()
@@ -235,7 +230,28 @@ names(ELO_LIST[[2014 - 1984]])
 
 # Basic probability prediction function
 # For seasons 2014 - 2017
-Prob_Predict <- function(elo1, elo2){
+NCAA_Tourney_sub <- list()
+combinations <- list()
+for(i in 2014:2017){
+  NCAA_Tourney_sub[[i - 2013]] <- subset(NCAATourneyCompactReults, NCAATourneyCompactReults$Season == i)
+  combinations[[i - 2013]] <- t(combn(unique(c(NCAA_Tourney_sub[[i - 2013]]$WTeamID, NCAA_Tourney_sub[[i - 2013]]$LTeamID)), 2))
+  
+}
+
+Prob_Predict <- function(teams, S){
+  name1 <- Teams$TeamID[Teams$TeamID == teams[, 1]]
+  name2 <- Teams$TeamID[Teams$TeamID == teams[, 2]]
+  n <- length(name1)
+  elo1 <- c()
+  elo2 <- c()
+  for(i in 1:n){
+    elo1t <- Team_ELO[[names(Team_ELO) == name1[i]]]$ELO
+    elo1[i] <- elo1t[length(elo1t)]
+    elo2t <- Team_ELO[[names(Team_ELO) == name2[i]]]$ELO
+    elo2[i] <- elo2t[length(elo2t)]
+    
+  }
+  elo1 <- 
   dr <- elo1 + 200 * (tdat$Location == "H") - (elo2 + 200 * (odat$Location == "H"))
   return(1 / (10 ^(-dr / 350) + 1))
 }
