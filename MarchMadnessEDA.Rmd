@@ -235,33 +235,64 @@ combinations <- list()
 for(i in 2014:2017){
   NCAA_Tourney_sub[[i - 2013]] <- subset(NCAATourneyCompactReults, NCAATourneyCompactReults$Season == i)
   combinations[[i - 2013]] <- t(combn(unique(c(NCAA_Tourney_sub[[i - 2013]]$WTeamID, NCAA_Tourney_sub[[i - 2013]]$LTeamID)), 2))
-  
 }
 
-Prob_Predict <- function(teams, S){
-  name1 <- Teams$TeamID[Teams$TeamID == teams[, 1]]
-  name2 <- Teams$TeamID[Teams$TeamID == teams[, 2]]
-  n <- length(name1)
-  elo1 <- c()
-  elo2 <- c()
-  for(i in 1:n){
-    elo1t <- Team_ELO[[names(Team_ELO) == name1[i]]]$ELO
-    elo1[i] <- elo1t[length(elo1t)]
-    elo2t <- Team_ELO[[names(Team_ELO) == name2[i]]]$ELO
-    elo2[i] <- elo2t[length(elo2t)]
-    
+# Format ID combinations so lowest one is in first column (submission formatting)
+for(i in 1:4){
+  for(j in 1:dim(combinations[[i]])[1]){ 
+    rmax <- max(combinations[[i]][j, ])
+    rmin <- min(combinations[[i]][j, ])
+    combinations[[i]][j, ] <- c(rmin, rmax)
   }
-  elo1 <- 
-  dr <- elo1 + 200 * (tdat$Location == "H") - (elo2 + 200 * (odat$Location == "H"))
+}
+
+# Function to retrieve probabilities
+Prob_Predict <- function(teams, S){
+  name <- matrix(ncol = 2, nrow = dim(teams)[1])
+  for(i in 1:dim(teams)[1]){
+    name[i, 1] <- as.character(Teams$TeamName[Teams$TeamID == teams[i, 1]]) 
+    name[i, 2] <- as.character(Teams$TeamName[Teams$TeamID == teams[i, 2]])
+  }
+  elos <- matrix(ncol = 2, nrow = dim(teams)[1])
+  for(i in 1:dim(teams)[1]){
+    elo1t <- Team_ELO[[which(names(Team_ELO) == name[i, 1])]]
+    elo1t <- subset(elo1t, elo1t$Season == S)
+    elo1t <- elo1t$ELO
+    elos[i, 1] <- elo1t[length(elo1t)]
+    elo2t <- Team_ELO[[which(names(Team_ELO) == name[i, 2])]]
+    elo2t <- subset(elo2t, elo2t$Season == S)
+    elo2t <- elo2t$ELO
+    elos[i, 2] <- elo2t[length(elo2t)]
+  }
+  dr <- elos[, 1] - elos[, 2]
   return(1 / (10 ^(-dr / 350) + 1))
 }
 
+# Generate predictions for 2014 - 2017 tournaments
+Predictions <- list()
+for(i in 1:4){
+  Predictions[[i]] <- Prob_Predict(combinations[[i]], 2013 + i)
+}
 
-
+# Format submission
+subdat <- matrix(ncol = 2, nrow = 4 * length(Predictions[[1]]))
+ss <- c("2014", "2015", "2016", "2017")
+ids <- matrix(ncol = 4, nrow = length(Predictions[[1]]))
+for(i in 1:length(Predictions[[1]])){
+  for(j in 1:4){
+    d <- combinations[[j]][i, ]
+    d <- paste(d, collapse = "_")
+    ids[i, j] <- paste(ss[j], d, sep = "_")   
+  }
+}
+idsr <- c(ids[, 1], ids[, 2], ids[, 3], ids[, 4])
+props <- c(Predictions[[1]], Predictions[[2]], Predictions[[3]], Predictions[[4]])
+subdat <- cbind(idsr, props)
+colnames(subdat) <- c("ID", "Pred")
+write.csv(subdat, "GrpsSubmission.csv", row.names = FALSE)
 ```
 
-
-
+I got it set so we can test our predictions, we can look at predictions but it's probably easiest to download the results and Kaggle's formula for scoring and just check on our own to tune the model. I made a submission of simple probabilities we placed 5th from the bottom based on the current setup.
 
 
 
