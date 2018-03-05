@@ -148,7 +148,7 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
   
   Opponent_ELO <- ifelse(pos ==1, baseline, ELO_LIST[[I - 1984]][[which(TEMP_TEAMS == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
   w <- as.numeric(tdat$Win)
-  dr <- Current_ELO + 100 * (tdat$Location == "H") - (Opponent_ELO + 200 * (odat$Location == "H"))
+  dr <- Current_ELO + 37.5 * (tdat$Location == "H") - (Opponent_ELO + 37.5 * (odat$Location == "H"))
   we <- 1 / (10 ^(-dr / 350) + 1) # edited Probability estimation so estimated probabilities had a better range
   elo <- Current_ELO + scalar * abs(tdat$PointSpread) * (w - we)
   if(elo < 1){
@@ -214,8 +214,6 @@ IT'S WORKING
 #CAN WE PREDICT BASED ON LAST ELO
 ```{r}
 # Put ELO scores back into Team data
-
-
 for(i in 1:length(Team_ELO)){
   seasons_played <- unique(Team_ELO[[i]]$Season)
   first_season <- min(seasons_played)
@@ -224,9 +222,6 @@ for(i in 1:length(Team_ELO)){
     Team_ELO[[i]][Team_ELO[[i]]$Season == j, ]$ELO <- ELO_LIST[[j - 1984]][[K]]
   }
 }
-  
-
-names(ELO_LIST[[2014 - 1984]])
 
 # Basic probability prediction function
 # For seasons 2014 - 2017
