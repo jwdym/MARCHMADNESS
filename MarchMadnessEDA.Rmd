@@ -135,7 +135,7 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
     }
     else {
       ind <- which(names(ELO_LIST[[I - 1984]][K]) == names(ELO_LIST[[I-1985]]))
-      elo <- mean(ELO_LIST[[I-1985]][[ind]])
+      elo <- 5000 + (tail(ELO_LIST[[I-1985]][[ind]], 1) - 5000) / 2
       return(elo) #I got it to give new D1 teams basline ELOs, however it has a hard time recognizing old vs new D1 teams
     }
   }
@@ -146,7 +146,7 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
   pos <- which((odat$Day == tdat$Day) & (odat$TeamID == tdat$OpponentID) & (odat$Season == tdat$Season))
   odat <- odat[pos, ]
   
-  Opponent_ELO <- ifelse(pos ==1, baseline, ELO_LIST[[I - 1984]][[which(TEMP_TEAMS == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
+  Opponent_ELO <- ifelse(pos == 1, baseline, ELO_LIST[[I - 1984]][[which(TEMP_TEAMS == opid)]][pos - 1]) #finds the right row, then uses the previous row's elo score
   w <- as.numeric(tdat$Win)
   dr <- Current_ELO + 37.5 * (tdat$Location == "H") - (Opponent_ELO + 37.5 * (odat$Location == "H"))
   we <- 1 / (10 ^(-dr / 350) + 1) # edited Probability estimation so estimated probabilities had a better range
