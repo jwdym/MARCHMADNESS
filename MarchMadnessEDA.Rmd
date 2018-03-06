@@ -211,7 +211,7 @@ Got the ELO scores to not be 0 at the start, function has a hard time recognizin
 IT'S WORKING
 
 
-#CAN WE PREDICT BASED ON LAST ELO
+# ELO Gibbs sampler
 ```{r}
 # Put ELO scores back into Team data
 for(i in 1:length(Team_ELO)){
@@ -223,6 +223,61 @@ for(i in 1:length(Team_ELO)){
   }
 }
 
+HNormGibbs <- function(nu0, s20, eta0, tau20, mu0, g20, dat, num.sims){
+  # Vector initialization
+  m <- length(dat)
+  mus <- c()
+  thetas <- list()
+  mus[1] <- 5000
+  thetas[[1]] <- rep(5000, m)
+  taus <- c()
+  taus[1] <- 100
+  sigmas <- c()
+  sigmas[1] <- 300
+    
+  for(i in 2:num.sims){
+    thetas[[i]] <- rep(0, m)
+    # Calculate Tau2
+    nun <- (nu0 + m) / 2
+    taun <- (nu0 * tau20 + sum((thetas[[i-1]] - mus[i-1]) ^ 2)) / 2
+    taus[i] <- 1 / rgamma(1, nun, taun)
+    
+    # Calculate Mu
+    varmu <- 1 / (m / taus[i] + 1 / g20)
+    mun <- (((m * mean(thetas[[i-1]])) / taus[i]) + mu0 / g20) * varmu
+    mus[i] <- rnorm(1, mun, varmu)
+    
+    # Calculate Thetas
+    for(j in 1:m){
+      n <- length(dat[[j]])
+      ybar <- mean(dat[[j]])
+      theta.var <- 1 / (n / sigmas[i-1] + 1 / taus[i])
+      theta.mu <- (sum(dat[[j]]) / sigmas[i-1] + 1 / taus[i]) * theta.var
+      thetas[[i]][j] <- rnorm(1, theta.mu, theta.mu)
+    }
+    
+    # Calculate Sigmas
+    nj <- 0
+    for(j in 1:m){nj <- nj + length(dat[[j]])}
+    nun <- (nu0 + nj) / 2
+    sse <- 0 
+    for(j in 1:m){sse <- sse + sum((dat[[j]] - thetas[[i]][j]) ^ 2)}
+    nus <- (nu0 * s20 + sse) / 2
+    sigmas[i] <- 1 / rgamma(1, nun, nus)
+  }
+  results <- list(Mu = mus, Sigma = sigmas, Tau = taus, Theta = thetas)
+  return(results)
+}
+
+posteriors <- list()
+for(i in 2014:2017){
+  tendies <- ELO_LIST[[i-1984]]
+  posteriors[[i - 2013]] <- HNormGibbs(nu0 = 1, s20 = 1, eta0 = 1, tau20 = 1, mu0 = 5000, g20 = 1, dat = tendies, num.sims = 1000)
+}
+```
+
+# Can we predict based on ELO MAP
+```{r}
 # Basic probability prediction function
 # For seasons 2014 - 2017
 NCAA_Tourney_sub <- list()
