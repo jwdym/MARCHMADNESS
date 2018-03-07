@@ -272,7 +272,38 @@ HNormGibbs <- function(nu0, s20, eta0, tau20, mu0, g20, dat, num.sims){
 posteriors <- list()
 for(i in 2014:2017){
   tendies <- ELO_LIST[[i-1984]]
-  posteriors[[i - 2013]] <- HNormGibbs(nu0 = 1, s20 = 1, eta0 = 1, tau20 = 1, mu0 = 5000, g20 = 1, dat = tendies, num.sims = 1000)
+  posteriors[[i - 2013]] <- HNormGibbs(nu0 = 2500, s20 = 2500, eta0 = 100, tau20 = 100, mu0 = 5000, g20 = 1000, dat = tendies, num.sims = 1000)
+}
+
+posterior_plots <- function(dat){
+  m <- length(dat)
+  i <- sample(m, 1)
+  n <- length(dat[[i]]$Theta[[1]])
+  nsims <- length(dat[[i]]$Theta)
+  posterior_mn <- c()
+  s <- sample(n, 1)
+  for(j in 1:nsims){
+    posterior_mn[j] <- dat[[i]]$Theta[[j]][s] 
+  }
+  par(mfrow = c(1, 2))
+  hist(posterior_mn, main = "Posterior means")
+  hist(ELO_LIST[[i + 29]][[s]], main = "Elos")
+  par(mfrow = c(1, 1))
+}
+
+posterior_plots(posteriors)
+
+posterior_means <- list()
+for(i in 1:4){
+  n <- length(posteriors[[i]]$Theta)
+  m <- length(posteriors[[i]]$Theta[[1]])
+  posts <- matrix(ncol = m, nrow = n)
+  for(j in 1:n){
+    for(k in 1:m){
+      posts[j, k] <- posteriors[[i]]$Theta[[j]][k]
+    }
+  }         
+  posterior_means[[i]] <- apply(posts, 2, mean)
 }
 ```
 
