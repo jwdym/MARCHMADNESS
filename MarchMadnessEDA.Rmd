@@ -272,7 +272,7 @@ HNormGibbs <- function(nu0, s20, eta0, tau20, mu0, g20, dat, num.sims){
 posteriors <- list()
 for(i in 2014:2017){
   tendies <- ELO_LIST[[i-1984]]
-  posteriors[[i - 2013]] <- HNormGibbs(nu0 = 2500, s20 = 2500, eta0 = 100, tau20 = 100, mu0 = 5000, g20 = 1000, dat = tendies, num.sims = 1000)
+  posteriors[[i - 2013]] <- HNormGibbs(nu0 = 0.01, s20 = 0.01, eta0 = 0.01, tau20 = 0.01, mu0 = 5000, g20 = 1000000, dat = tendies, num.sims = 1000)
 }
 
 posterior_plots <- function(dat){
@@ -305,6 +305,12 @@ for(i in 1:4){
   }         
   posterior_means[[i]] <- apply(posts, 2, mean)
 }
+
+par(mfrow = c(2, 2))
+for(i in 1:4){
+  hist(posterior_means[[i]])
+}
+par(mfrow = c(1, 1))
 ```
 
 # Can we predict based on ELO MAP
@@ -418,8 +424,7 @@ props <- c(Predictions[[1]], Predictions[[2]], Predictions[[3]], Predictions[[4]
 subdat <- cbind(idsr, props)
 colnames(subdat) <- c("ID", "Pred")
 work <- getwd()
-n <- nchar(work)
-work <- substr(work, 1, n - 10)
+# Working directory should be MARCHMADNESS
 setwd(work)
 write.csv(subdat, "GrpsSubmission.csv", row.names = FALSE)
 ```
