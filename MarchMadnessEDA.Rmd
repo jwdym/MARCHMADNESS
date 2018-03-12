@@ -26,9 +26,9 @@ GameCities <- read.csv("GameCities.csv")
 NCAATourneyCompactReults <- read.csv("NCAATourneyCompactResults.csv")
 NCAATourneyDetailedResults <- read.csv("NCAATourneyDetailedResults.csv")
 NCAATourneySeedRoundSlots <- read.csv("NCAATourneySeedRoundSlots.csv")
-NCAATourneySeeds <- read.csv("NCAATourneySeeds.csv")
+#NCAATourneySeeds <- read.csv("NCAATourneySeeds.csv") Use new data
 NCAATourneySlots <- read.csv("NCAATourneySlots.csv")
-RegularSeasonCompactResults <- read.csv("RegularSeasonCompactResults.csv")
+#RegularSeasonCompactResults <- read.csv("RegularSeasonCompactResults.csv") use full data set for stage 2
 RegularSeasonDetailedResults <- read.csv("RegularSeasonDetailedResults.csv")
 Seasons <- read.csv("Seasons.csv")
 SecondaryTourneyCompactResults <- read.csv("SecondaryTourneyCompactResults.csv")
@@ -37,6 +37,10 @@ TeamCoaches <- read.csv("TeamCoaches.csv")
 TeamConferences <- read.csv("TeamConferences.csv")
 Teams <- read.csv("Teams.csv")
 TeamSpellings <- read.csv("TeamSpellings.csv")
+# Stored stage 2 files in Stage2files folder
+setwd(paste0(work, "/Stage2files"))
+RegularSeasonCompactResults <- read.csv("RegularSeasonCompactResults.csv")
+NCAATourneySeeds <- read.csv("NCAATourneySeeds.csv")
 ```
 
 # EDA
@@ -87,7 +91,7 @@ for(i in 1:dim(Teams)[1]){
   coach <- TeamCoaches[TeamCoaches$TeamID == Teams$TeamID[i], ]
   coach <- coach[coach$FirstDayNum == 0, ]
   dat <- full_join(dat, coach, by = "Season")
-  dat <- dat[dat$Season != 2018, ]
+  #dat <- dat[dat$Season != 2018, ] using full data now
   home <- dat$WLoc
   for(j in 1:length(home)){
     if(win[j]){
@@ -163,7 +167,7 @@ Get_ELO <- function(scalar, df, teamid, iter, baseline, I, K){
 #builds a function to work through the list and calculate team elo
 #DEFINE ELO LIST
 ELO_LIST <- list()
-for (i in 1985:2017){
+for (i in 1985:2018){
   ELO_LIST[[i-1984]] <- list() #defines the kth part to be a list, according to Dr. Dym
   szn_filter <- function(df, year){dplyr::filter(df, Season == i)}
   TTEMP_LIST <- lapply(Team_ELO, szn_filter) #generates list of elos for that given year
@@ -312,6 +316,52 @@ for(i in 1:4){
 }
 par(mfrow = c(1, 1))
 ```
+
+# Stage 2 predictions based on ELO
+```{r}
+
+combinations <- t(combn(unique(NCAATourneySeeds[NCAATourneySeeds$Season == 2018, ]$TeamID), 2))
+for(j in 1:dim(combinations)[1]){ 
+    rmax <- max(combinations[j, ])
+    rmin <- min(combinations[j, ])
+    combinations[j, ] <- c(rmin, rmax)
+}
+
+Prob_Predict <- function(teams, S){
+  name <- matrix(ncol = 2, nrow = dim(teams)[1])
+  for(i in 1:dim(teams)[1]){
+    name[i, 1] <- as.character(Teams$TeamName[Teams$TeamID == teams[i, 1]]) 
+    name[i, 2] <- as.character(Teams$TeamName[Teams$TeamID == teams[i, 2]])
+  }
+  elos <- matrix(ncol = 2, nrow = dim(teams)[1])
+  for(i in 1:dim(teams)[1]){
+    elo1t <- Team_ELO[[which(names(Team_ELO) == name[i, 1])]]
+    elo1t <- subset(elo1t, elo1t$Season == S)
+    elo1t <- elo1t$ELO
+    elos[i, 1] <- elo1t[length(elo1t)]
+    elo2t <- Team_ELO[[which(names(Team_ELO) == name[i, 2])]]
+    elo2t <- subset(elo2t, elo2t$Season == S)
+    elo2t <- elo2t$ELO
+    elos[i, 2] <- elo2t[length(elo2t)]
+  }
+  dr <- elos[, 1] - elos[, 2]
+  return(1 / (10 ^(-dr / 350) + 1))
+}
+
+Predictions <- Prob_Predict(combinations, 2018)
+ss <- "2018"
+ids <- rep(0, length(Predictions))
+for(i in 1:length(Predictions)){
+  d <- combinations[i, ]
+  d <- paste(d, collapse = "_")
+  ids[i] <- paste(ss, d, sep = "_")   
+}
+subdat <- matrix(ncol = 2, nrow = 4 * length(Predictions[[1]]))
+subdat <- cbind(ids, Predictions)
+colnames(subdat) <- c("ID", "Pred")
+write.csv(subdat, "GrpsSubmission.csv", row.names = FALSE)
+```
+
 
 # Can we predict based on ELO MAP
 ```{r}
